@@ -1,5 +1,3 @@
-name: RateLimit-Reset
-in: header
 required: false
 description: Unix timestamp when the rate limit window resets
 schema:

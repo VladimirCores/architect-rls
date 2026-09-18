@@ -22,7 +22,7 @@
 |---|---|
 | Backend | Bun + Hono + Drizzle + Zod |
 | API-спецификация | OpenAPI 3.1 |
-| Генерация | `@hono/zod-openapi`, `openapi-generator-cli` (dart-dio) |
+| Генерация | `orval` (hono-клиент), `openapi-generator-cli` (dart-dio) |
 | Frontend | Flutter (desktop + web) |
 | UI | Material 3 |
 | Состояние | `wire` / `wire_flutter` |

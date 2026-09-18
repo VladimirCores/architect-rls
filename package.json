@@ -16,6 +16,7 @@
     "lint:fix": "biome check --write backend/src",
     "format": "biome format --write backend/src",
     "generate": "bun run --cwd backend generate",
+    "generate:api": "bun run swagger:bundle && bun run --cwd backend generate",
     "swagger:ui": "podman compose -f docker-compose.yml up",
     "swagger:lint": "bunx redocly lint swagger/openapi.yaml",
     "swagger:bundle": "bunx redocly bundle swagger/openapi.yaml -o swagger/dist/openapi.json",

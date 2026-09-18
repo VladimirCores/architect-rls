@@ -59,15 +59,17 @@
 │   ├── src/
 │   │   ├── domain/       # чистая логика: boids, РЛС, правила
 │   │   ├── application/  # use-cases
-│   │   ├── controllers/  # бизнес-логика Hono-роутов
+│   │   ├── controllers/  # бизнес-логика Hono-роутов (по одному файлу на домен, напр. auth.ts)
+│   │   ├── generated/    # СГЕНЕРИРОВАНО orval из swagger: endpoints/, handlers/, schemas/ (не редактировать)
 │   │   ├── infrastructure/
 │   │   │   ├── db/       # sqlite / postgres адаптеры, Drizzle-схемы
 │   │   │   ├── map/      # mbtiles-провайдер
 │   │   │   ├── bus/      # EventBus (InProcess / Redis)
 │   │   │   ├── http/     # Hono-роуты, middleware
 │   │   │   └── ws/       # WebSocket-handler (координаты boids)
-│   │   └── main.ts
+│   │   └── main.ts       # Hono<AppEnv> + монтирование сгенерированных tag-приложений (/api/v1)
 │   ├── migrations/
+│   ├── orval.config.ts   # генерация из swagger/dist/openapi.json (client: hono)
 │   └── Taskfile.yaml
 ├── frontend/             # Flutter
 │   ├── lib/
@@ -184,6 +186,46 @@ npm run swagger:ui     # podman compose up — http://localhost:9989
 
 ---
 
+## 2.3 Генерация API-кода из OpenAPI (orval)
+
+**Формат:** OpenAPI 3.1 в `swagger/` — источник истины (см. ADR-0005, ADR-0024). Из него **генерируется** Hono-код backend'а через **orval** (`client: 'hono'`). Бизнес-логика — вручную в `backend/src/controllers/`, отдельно от сгенерированного кода.
+
+**Поток:**
+
+```bash
+bun run generate:api
+# 1. swagger:bundle — redocly bundle → swagger/dist/openapi.json (единый файл)
+# 2. backend:generate — orval --config backend/orval.config.ts → backend/src/generated/
+```
+
+**Что генерируется (`backend/src/generated/`):**
+
+- `endpoints/<tag>/<tag>.ts` — Hono-приложение с роутами (по тегу: auth, profile, simulation, …).
+- `endpoints/<tag>/<tag>.zod.ts` — Zod-схемы запросов/ответов.
+- `endpoints/<tag>/<tag>.context.ts` — типизированные контексты Hono.
+- `endpoints/filename.validator.ts` — валидатор (`zValidator`, на базе `@hono/zod-validator`).
+- `handlers/<operationId>.ts` — **стабы-обработчики** (тонкие: валидация + вызов контроллера).
+- `schemas/` — TypeScript-типы.
+
+**Разделение кода:**
+
+| Слой | Где | Кто пишет |
+|---|---|---|
+| Роуты, Zod, типы, валидатор | `backend/src/generated/` | orval (не редактировать) |
+| Бизнес-логика | `backend/src/controllers/` | вручную, по одному файлу на домен |
+| Сборка приложения | `backend/src/main.ts` | вручную (монтирует tag-приложения) |
+
+**Пример (`/login`):** стаб `handlers/login.ts` валидирует тело/ответ и вызывает `login(c)` из `controllers/auth.ts`. Orval (`handlerGenerationStrategy: smart`) сохраняет вызов контроллера при регенерации.
+
+**Правила:**
+
+- Менять только `swagger/` и `controllers/`; после правок спеки — `bun run generate:api`.
+- Не редактировать `backend/src/generated/` — будет перезаписано.
+- Если изменился `operationId`/тег — стаб пересоздаётся, вызов контроллера подключить заново.
+- `swagger/dist/` и `backend/src/generated/` — генерируемые, не коммитятся.
+
+---
+
 ## 3. Индекс ADR
 
 | № | Решение | Статус |
@@ -192,7 +234,7 @@ npm run swagger:ui     # podman compose up — http://localhost:9989
 | [0002](docs/adr/0002-monorepo-build.md) | Монорепозиторий и сборка | Accepted |
 | [0003](docs/adr/0003-basic-auth.md) | Аутентификация через Basic Auth | Accepted |
 | [0004](docs/adr/0004-features.md) | Система features | Accepted |
-| [0005](docs/adr/0005-api-first.md) | API First с @hono/zod-openapi | Accepted |
+| [0005](docs/adr/0005-api-first.md) | API First — Orval генерация Hono-роутов и Zod-схем (бизнес-логика в controllers/) | Accepted |
 | [0006](docs/adr/0006-versioning-errors.md) | Версионирование и формат ошибок | Accepted |
 | [0007](docs/adr/0007-pagination.md) | Пагинация | Accepted |
 | [0008](docs/adr/0008-deployment-modes.md) | Режимы развёртывания backend | Accepted |

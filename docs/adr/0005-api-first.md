@@ -1,6 +1,6 @@
-# ADR-0005: API First с @hono/zod-openapi
+# ADR-0005: API First — Orval генерация Hono роутов и Zod-схем
 
-**Дата:** 2026-09-17
+**Дата:** 2026-09-18 (обновлено)
 **Статус:** Accepted
 **Теги:** api, backend, frontend
 
@@ -8,46 +8,63 @@
 
 ## Контекст
 
-Нужен единый контракт для backend (TS) и frontend (Dart). Изначально рассматривалась схема spec → код для роутов Hono, но полноценного генератора Hono из OpenAPI нет.
+Нужен единый контракт для backend (TS) и frontend (Dart). Источник истины — OpenAPI-спека в `swagger/`. Требуется генерировать Hono-роуты и Zod-схемы из спеки, но так, чтобы **бизнес-логика оставалась отдельно** (в `controllers/`).
+
+## Рассмотренные варианты
+
+1. **`@hono/zod-openapi` (ранее)** — роуты описывались вручную Zod-схемами, spec генерировался из кода. Источник истины де-факто — код, спека — зеркало. Ручная синхронизация через CI-дифф.
+2. **`hono-takibi`** — генератор OpenAPI → `@hono/zod-openapi`; рассматривался, но не выбран (отказ от генерации и валидации на стороне спеки).
+3. **`orval` (выбран)** — генератор из OpenAPI, поддерживает `client: 'hono'`: Hono-роуты, Zod-схемы, типы, валидатор, типизированные контексты. Спека — источник истины, код — производный артефакт.
 
 ## Решение
 
-- **Источник истины — код роутов** (Hono + Zod). OpenAPI-спека в `swagger/` — производный артефакт, генерируется из кода и сверяется с ним в CI.
-- Для Hono используется **`@hono/zod-openapi`**: роуты описываются Zod-схемами, из них **генерируется spec**, который затем сверяется с эталонным в `swagger/`.
-- Для Dart — **`openapi-generator-cli`** с шаблоном `dart-dio` (клиент на Dio).
-- DTO и роуты полностью разделены. Бизнес-логика — в папке `controllers/`, по одному файлу на домен (auth, profile, rls, boids, settings, simulation, marking, map, reports, logs, admin/users, admin/features, events).
+### Поток генерации
 
-### Роуты (v1)
+1. **`swagger/` — источник истины** (multi-file OpenAPI 3.1, домен-ориентированная, см. ADR-0024).
+2. **Бандл:** `redocly bundle swagger/openapi.yaml → swagger/dist/openapi.json` (единый файл, т.к. Orval не резолвит multi-file `$ref`).
+3. **Генерация:** `orval` по `backend/orval.config.ts` → `backend/src/generated/`:
+   - `endpoints/<tag>/<tag>.ts` — Hono-приложение с роутами (по тегу: auth, profile, simulation, …).
+   - `endpoints/<tag>/<tag>.zod.ts` — Zod-схемы запросов/ответов.
+   - `endpoints/<tag>/<tag>.context.ts` — типизированные контексты Hono.
+   - `endpoints/filename.validator.ts` — валидатор (`zValidator` на базе `@hono/zod-validator`, включая response-валидацию).
+   - `handlers/<operationId>.ts` — **стабы-обработчики** (тонкие: валидация + вызов контроллера).
+   - `schemas/` — TypeScript-типы.
 
-| Метод | Путь | Назначение |
-|---|---|---|
-| POST | `/login` | Аутентификация |
-| GET | `/profile` | Свой профиль |
-| POST | `/actions/changepassword` | Смена пароля |
-| GET | `/map/tiles/:z/:x/:y` | Векторные тайлы |
-| CRUD | `/map/rls/:id` | РЛС на карте |
-| CRUD | `/rls` (+sub) | Справочник РЛС |
-| CRUD | `/boids` (+sub) | Справочник boids |
-| RU | `/settings` (+sub) | Настройки симуляций |
-| GET | `/reports` (+sub) | Отчёты |
-| GET | `/logs` (+sub) | Логи |
-| CRUD | `/admin/users` (+sub) | Пользователи |
-| GET | `/admin/users/:id` | Профиль пользователя (админ) |
-| CRUD | `/admin/features` (+sub) | Features |
-| POST | `/actions/simulation/start\|stop\|pause\|complete` | Управление симуляцией |
-| POST | `/actions/boids/mark` | Пометка boid оператором (опасный/безопасный) |
-| POST | `/event` | Произвольное событие (`{type: int, ...}`) |
+### Разделение кода
+
+- **Сгенерированное** (`backend/src/generated/`) — роуты, Zod, типы, валидатор, стабы. Не редактировать вручную; перегенерируется.
+- **Бизнес-логика** (`backend/src/controllers/`) — по одному файлу на домен (auth, profile, rls, …). Контроллеры импортируют сгенерированные контексты/типы.
+- **Связка:** стаб-обработчик вызывает контроллер. Orval (`handlerGenerationStrategy: smart`) **сохраняет тело стаба** при регенерации — вызов контроллера не затирается.
+- **`backend/src/main.ts`** — собирает приложение: `Hono<AppEnv>`, middleware (БД, auth), монтирует сгенерированные tag-приложения через `app.route("/api/v1", …)`.
+
+### Пример — `/login`
+
+- `backend/src/generated/handlers/login.ts` (сгенерирован, стаб): валидация `LoginBody`/`LoginResponse` → `login(c)`.
+- `backend/src/controllers/auth.ts` (бизнес-логика): проверка пароля, роли, features, ответ профилем или `problem+json`.
+
+### Команды
+
+- Корень: `bun run generate:api` = `swagger:bundle` + `backend:generate`.
+- Backend: `bun run generate` = `orval --config orval.config.ts`.
 
 ## Следствия
 
 **Положительные:**
-- ✅ Один spec → два клиента (TS, Dart).
-- ✅ Contract-тесты на CI (Schemathesis).
+- ✅ Спека — источник истины; код генерируется из неё, расхождение исключено.
+- ✅ Бизнес-логика изолирована в `controllers/`, отдельно от сгенерированных роутов/Zod.
+- ✅ Zod-валидация (в т.ч. response) включена в сгенерированные стабы.
+- ✅ Contract-тесты на CI (Schemathesis) сверяют поведение со спекой.
 
 **Отрицательные / риски:**
-- ⚠️ `@hono/zod-openapi` требует, чтобы spec генерировался из кода, а не наоборот. Источник истины де-факто — код, а spec в `swagger/` — зеркало. Держать синхронизацию через CI-дифф.
+- ⚠️ Стабы-обработчики генерируются; вызов контроллера сохраняется за счёт `smart`-стратегии Orval — при смене `operationId`/тега файл пересоздаётся (нужно переподключить контроллер).
+- ⚠️ Orval требует единый бандл спеки (`swagger/dist/openapi.json`) — обязателен шаг `swagger:bundle` перед генерацией.
+- ⚠️ Сгенерированные tag-приложения — `new Hono()` без `AppEnv`; типизация окружения достигается в `main.ts` через `app.route` и middleware.
 
 ## Ссылки
 
 - [OpenAPI Specification 3.1](https://spec.openapis.org/oas/v3.1.0)
-- [@hono/zod-openapi](https://github.com/honojs/middleware/tree/main/packages/zod-openapi)
+- [Orval — Hono](https://orval.dev/docs/guides/hono)
+- [@hono/zod-validator](https://github.com/honojs/middleware/tree/main/packages/zod-validator)
+- [Redocly CLI — bundle](https://redocly.com/docs/cli/commands/bundle/)
+- [ADR-0017 — Modular monolith и границы модулей](0017-modular-monolith.md)
+- [ADR-0024 — Swagger: домен-ориентированная multi-file спецификация](0024-swagger-multifile.md)

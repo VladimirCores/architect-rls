@@ -75,4 +75,4 @@
 - [swaggerapi/swagger-ui (Docker image)](https://hub.docker.com/r/swaggerapi/swagger-ui)
 - [JSON Pointer (RFC 6901)](https://datatracker.ietf.org/doc/html/rfc6901)
 - [ADR-0002 — Монорепозиторий и сборка](0002-monorepo-build.md)
-- [ADR-0005 — API First с @hono/zod-openapi](0005-api-first.md)
+- [ADR-0005 — API First — Orval генерация Hono-роутов и Zod-схем](0005-api-first.md)

@@ -19,9 +19,15 @@
 ## Backend
 
 - [Hono](https://hono.dev/)
-- [@hono/zod-openapi](https://github.com/honojs/middleware/tree/main/packages/zod-openapi)
+- [@hono/zod-validator](https://github.com/honojs/middleware/tree/main/packages/zod-validator)
 - [Drizzle ORM](https://orm.drizzle.team/)
 - [Bun](https://bun.sh/)
+
+## Генерация API-кода
+
+- [Orval](https://orval.dev/)
+- [Orval — Hono](https://orval.dev/docs/guides/hono)
+- [Orval — конфигурация](https://orval.dev/docs/configuration/overview)
 
 ## Тестирование
 

@@ -11,6 +11,8 @@ _bmad/render/
 # ── Node / Bun ───────────────────────────────────────────
 node_modules/
 bun.lockb
+package-lock.json
+backend/package-lock.json
 
 # ── Build output ─────────────────────────────────────────
 backend/dist/

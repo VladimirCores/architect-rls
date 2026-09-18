@@ -12,7 +12,7 @@ export const sessions = sqliteTable("sessions", {
 });
 
 export const events = sqliteTable("events", {
-  event_id: integer("event_id").primary({ autoIncrement: true }),
+  event_id: integer("event_id").primaryKey(),
   name: text("name", { length: 100 }).notNull(),
   type: integer("type").notNull(),
   timestamp: text("timestamp").notNull(),

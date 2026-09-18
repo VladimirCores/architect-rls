@@ -40,6 +40,9 @@ docker compose up  # http://localhost:9989
 ## Разработка
 
 ```bash
+# Генерация Hono-роутов и Zod-схем из OpenAPI (orval)
+bun run generate:api
+
 # Запуск тестов
 bun run backend:test
 
