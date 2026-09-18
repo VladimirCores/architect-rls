@@ -1,68 +1,55 @@
-# RLS
+# RLS — Симулятор РЛС
 
-A Node.js/TypeScript backend service with OpenAPI/Swagger support.
+Desktop-приложение для тренировки операторов РЛС (Linux/Windows). Наблюдение и маркировка движущихся объектов (boids) в реальном времени.
 
-## Overview
+## Возможности
 
-This project is a monorepo-style backend application built with TypeScript, using Bun as the runtime. It includes:
+- **Симуляция в реальном времени**: до 1000 объектов, обновление координат каждые ~16 мс
+- **Запись сессий**: воспроизведение действий оператора (event sourcing, `.rlsrec`)
+- **Server-authoritative**: REST для статусов, WebSocket для координат
+- **API-first**: OpenAPI 3.1 как источник истины (`swagger/`)
+- **Модульная архитектура**: 8 доменных модулей в едином деплое
 
-- **REST API** with OpenAPI 3.0 specification
-- **Swagger UI** for API documentation and testing
-- **Task-based automation** using Taskfile
-- **Code quality** tools (Biome for linting/formatting)
+## Технологический стек
 
-## Project Structure
+| Компонент | Технология |
+|-----------|------------|
+| Backend | Bun + Hono + Drizzle (TypeScript) |
+| Frontend | Flutter (Canvas 2D) |
+| База данных | SQLite (dev) / Postgres (prod) |
 
-```
-├── backend/          # Main backend application
-├── docs/             # Documentation
-├── swagger/          # OpenAPI specification and UI assets
-├── tests/            # Test files
-└── .bmad/            # BMad agent configuration
-```
+## Архитектура
 
-## Quick Start
+Подробнее см. [ARCHITECTURE.md](ARCHITECTURE.md). Основные модули:
 
-### Prerequisites
-- [Bun](https://bun.sh) v1.3.8+
-- [Task](https://taskfile.dev) (optional)
+- **Simulation Engine** — физика и состояние объектов
+- **Session Manager** — жизненный цикл сессии
+- **Event Store** — лог событий (аппенд-онли)
+- **Analytics & Reports** — статистика и отчёты
 
-### Development
+## Быстрый старт
 
 ```bash
-# Start backend in watch mode
+# Backend в режиме разработки
 bun run backend:dev
 
-# Run tests
+# Swagger UI (документация API)
+docker compose up  # http://localhost:9989
+```
+
+## Разработка
+
+```bash
+# Запуск тестов
 bun run backend:test
 
-# Type check
-bun run backend:typecheck
+# Линтинг и форматирование
+bun run lint
+bun run format
 ```
 
-### API Documentation
+## Документация
 
-Start Swagger UI locally:
-```bash
-# Using Docker
-docker compose up
-
-# Using Task
-task swagger:ui
-```
-
-Access at http://localhost:9989
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `bun run backend:dev` | Start backend in watch mode |
-| `bun run backend:build` | Build backend binary |
-| `bun run backend:test` | Run all tests |
-| `bun run lint` | Lint code with Biome |
-| `bun run generate` | Regenerate routes and schemas |
-
-## License
-
-Private project
+- [Архитектурные решения (ADR)](docs/adr/)
+- [Интерактивная диаграмма архитектуры](docs/archify/rls-architecture.html)
+- [OpenAPI спецификация](swagger/openapi.yaml)
