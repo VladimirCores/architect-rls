@@ -1,0 +1,120 @@
+/map/rls:
+  get:
+    tags:
+      - Map
+    summary: List RLS stations on the map
+    operationId: listMapRls
+    parameters:
+      - $ref: ../components/parameters/PageParam.yaml
+      - $ref: ../components/parameters/LimitParam.yaml
+      - $ref: ../components/parameters/SortParam.yaml
+    responses:
+      '200':
+        description: Paginated list of RLS stations on map
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/RlsMapList"
+      '422':
+        description: Invalid pagination or sort parameters
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  post:
+    tags:
+      - Map
+    summary: Place an RLS station on the map
+    operationId: placeMapRls
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/PlaceRlsOnMapRequest"
+    responses:
+      '201':
+        description: RLS placed on map
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/MapRls"
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+/map/rls/{id}:
+  get:
+    tags:
+      - Map
+    summary: Get RLS station on map by ID
+    operationId: getMapRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    responses:
+      '200':
+        description: RLS station on map
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/MapRls"
+      '404':
+        description: Not found
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  put:
+    tags:
+      - Map
+    summary: Update RLS station position on map
+    operationId: updateMapRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/PlaceRlsOnMapRequest"
+    responses:
+      '200':
+        description: RLS station updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/MapRls"
+      '404':
+        description: Not found
+  delete:
+    tags:
+      - Map
+    summary: Remove RLS station from map
+    operationId: removeMapRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    responses:
+      '204':
+        description: RLS station removed from map
+/map/tiles/{z}/{x}/{y}:
+  get:
+    tags:
+      - Map
+    summary: Get vector map tile
+    operationId: getMapTile
+    parameters:
+      - $ref: ../components/parameters/ZPath.yaml
+      - $ref: ../components/parameters/XPath.yaml
+      - $ref: ../components/parameters/YPath.yaml
+    responses:
+      '200':
+        description: Map tile binary data
+        content:
+          application/x-protobuf:
+            schema:
+              type: string
+              format: binary
+      '404':
+        description: Tile not found

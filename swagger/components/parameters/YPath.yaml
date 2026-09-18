@@ -1,0 +1,7 @@
+name: 'y'
+in: path
+required: true
+description: Tile Y coordinate
+schema:
+  type: integer
+  minimum: 0

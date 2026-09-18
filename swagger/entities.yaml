@@ -1,0 +1,62 @@
+components:
+  schemas:
+    OkResponse:
+      title: OkResponse
+      description: Success
+    Problem:
+      title: Problem
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI identifying the error type
+          example: https://docs.example.com/problems/validation-error
+        title:
+          type: string
+          description: Short human-readable summary
+          example: Validation Error
+        status:
+          type: integer
+          minimum: 100
+          maximum: 599
+          description: HTTP status code
+          example: 422
+        detail:
+          type: string
+          description: Human-readable explanation
+          example: The request contains 2 validation errors.
+        instance:
+          type: string
+          format: uri
+          description: URI reference for this occurrence
+        request_id:
+          type: string
+          format: uuid
+          description: Unique request identifier for support
+        errors:
+          type: array
+          description: Optional field-level validation errors
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - field
+            - message
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+    ProblemResponse:
+      title: ProblemResponse
+      description: Error (RFC 7807 Problem Details)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

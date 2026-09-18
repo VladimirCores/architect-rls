@@ -1,0 +1,19 @@
+/profile:
+  get:
+    tags:
+      - Profile
+    summary: Get current user profile
+    operationId: getProfile
+    responses:
+      '200':
+        description: Profile data
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Profile"
+      '401':
+        description: Not authenticated
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"

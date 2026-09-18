@@ -1,0 +1,80 @@
+/settings:
+  get:
+    tags:
+      - Settings
+    summary: List application settings
+    operationId: listSettings
+    responses:
+      '200':
+        description: Settings list
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/SettingList"
+  post:
+    tags:
+      - Settings
+    summary: Create an application setting
+    operationId: createSetting
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CreateSettingRequest"
+    responses:
+      '201':
+        description: Setting created
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Setting"
+/settings/{id}:
+  get:
+    tags:
+      - Settings
+    summary: Get setting by ID
+    operationId: getSetting
+    parameters:
+      - $ref: ../components/parameters/SettingIdPath.yaml
+    responses:
+      '200':
+        description: Setting value
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Setting"
+      '404':
+        description: Not found
+  put:
+    tags:
+      - Settings
+    summary: Update setting
+    operationId: updateSetting
+    parameters:
+      - $ref: ../components/parameters/SettingIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/UpdateSettingRequest"
+    responses:
+      '200':
+        description: Setting updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Setting"
+      '404':
+        description: Not found
+  delete:
+    tags:
+      - Settings
+    summary: Delete setting
+    operationId: deleteSetting
+    parameters:
+      - $ref: ../components/parameters/SettingIdPath.yaml
+    responses:
+      '204':
+        description: Setting deleted

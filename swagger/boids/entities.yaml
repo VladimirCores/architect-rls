@@ -1,0 +1,214 @@
+components:
+  schemas:
+    Boid:
+      title: Boid
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - code
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          example: boid_abc123
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Flock Eagle
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: BOID-EAGLE-01
+        speed_min:
+          type: number
+          format: double
+          minimum: 0
+          description: Minimum speed in m/s
+          example: 5
+        speed_max:
+          type: number
+          format: double
+          minimum: 0
+          description: Maximum speed in m/s
+          example: 30
+        altitude_min:
+          type: number
+          format: double
+          minimum: 0
+          description: Minimum altitude in meters
+          example: 100
+        altitude_max:
+          type: number
+          format: double
+          minimum: 0
+          description: Maximum altitude in meters
+          example: 5000
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    BoidList:
+      title: BoidList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Boid'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200
+    CreateBoidRequest:
+      title: CreateBoidRequest
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - code
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        speed_min:
+          type: number
+          format: double
+          minimum: 0
+        speed_max:
+          type: number
+          format: double
+          minimum: 0
+        altitude_min:
+          type: number
+          format: double
+          minimum: 0
+        altitude_max:
+          type: number
+          format: double
+          minimum: 0
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+    MarkBoidRequest:
+      title: MarkBoidRequest
+      type: object
+      additionalProperties: false
+      required:
+      - simulation_id
+      - boid_instance_id
+      - value
+      properties:
+        simulation_id:
+          type: string
+          format: uuid
+          description: Active simulation session ID
+        boid_instance_id:
+          type: string
+          format: uuid
+          description: Boid instance ID (not directory ID)
+        value:
+          type: string
+          enum:
+          - dangerous
+          - safe
+          description: Marking value
+        idempotency_key:
+          type: string
+          format: uuid
+          description: Client-generated UUID for idempotent retries
+    MarkBoidResult:
+      title: MarkBoidResult
+      type: object
+      additionalProperties: false
+      required:
+      - event_id
+      - simulation_id
+      - boid_instance_id
+      - value
+      - tick
+      properties:
+        event_id:
+          type: integer
+          description: Event identifier in analytics DB
+        simulation_id:
+          type: string
+          format: uuid
+        boid_instance_id:
+          type: string
+          format: uuid
+        value:
+          type: string
+          enum:
+          - dangerous
+          - safe
+        tick:
+          type: integer
+          minimum: 0
+          description: Simulation tick at which the marking was recorded
+    UpdateBoidRequest:
+      title: UpdateBoidRequest
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        speed_min:
+          type: number
+          format: double
+          minimum: 0
+        speed_max:
+          type: number
+          format: double
+          minimum: 0
+        altitude_min:
+          type: number
+          format: double
+          minimum: 0
+        altitude_max:
+          type: number
+          format: double
+          minimum: 0
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true

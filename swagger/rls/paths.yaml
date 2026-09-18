@@ -1,0 +1,100 @@
+/rls:
+  get:
+    tags:
+      - RLS
+    summary: List radar stations (directory)
+    operationId: listRls
+    parameters:
+      - $ref: ../components/parameters/PageParam.yaml
+      - $ref: ../components/parameters/LimitParam.yaml
+      - $ref: ../components/parameters/SortParam.yaml
+    responses:
+      '200':
+        description: Paginated list of RLS stations
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/RlsList"
+      '422':
+        description: Invalid pagination or sort parameters
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  post:
+    tags:
+      - RLS
+    summary: Create a radar station
+    operationId: createRls
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CreateRlsRequest"
+    responses:
+      '201':
+        description: RLS created
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Rls"
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+/rls/{id}:
+  get:
+    tags:
+      - RLS
+    summary: Get radar station by ID
+    operationId: getRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    responses:
+      '200':
+        description: RLS station details
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Rls"
+      '404':
+        description: Not found
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  put:
+    tags:
+      - RLS
+    summary: Update radar station
+    operationId: updateRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/UpdateRlsRequest"
+    responses:
+      '200':
+        description: RLS updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Rls"
+      '404':
+        description: Not found
+  delete:
+    tags:
+      - RLS
+    summary: Delete radar station
+    operationId: deleteRls
+    parameters:
+      - $ref: ../components/parameters/RlsIdPath.yaml
+    responses:
+      '204':
+        description: RLS deleted

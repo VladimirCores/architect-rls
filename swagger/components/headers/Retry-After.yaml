@@ -1,0 +1,7 @@
+name: Retry-After
+in: header
+required: false
+description: Seconds to wait before retrying (on 429 responses)
+schema:
+  type: integer
+  minimum: 1

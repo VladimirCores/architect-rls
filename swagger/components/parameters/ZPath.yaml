@@ -1,0 +1,8 @@
+name: z
+in: path
+required: true
+description: Tile zoom level
+schema:
+  type: integer
+  minimum: 0
+  maximum: 14

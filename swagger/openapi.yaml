@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: RLS Simulator API
+  version: 1.0.0
+  contact:
+    name: RLS Simulator Team
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development
+tags:
+  - name: Auth
+    description: Authentication and session management
+  - name: Profile
+    description: User profile and settings
+  - name: RLS
+    description: Radar station directory (CRUD)
+  - name: Boids
+    description: Boid directory (CRUD)
+  - name: Settings
+    description: Application settings
+  - name: Simulation
+    description: Simulation lifecycle actions
+  - name: Marking
+    description: Operator boid marking actions
+  - name: Map
+    description: Map tiles and RLS on map
+  - name: Reports
+    description: Report generation
+  - name: Logs
+    description: Application logs
+  - name: Admin
+    description: Administration (users, features)
+  - name: Events
+    description: Custom event ingestion
+paths:
+  /login:
+    $ref: "auth/paths.yaml#/~1login"
+  /logout:
+    $ref: "auth/paths.yaml#/~1logout"
+  /profile:
+    $ref: "users/paths.yaml#/~1profile"
+  /actions/changepassword:
+    $ref: "auth/paths.yaml#/~1actions~1changepassword"
+  /actions/simulation/start:
+    $ref: "simulation/paths.yaml#/~1actions~1simulation~1start"
+  /actions/simulation/stop:
+    $ref: "simulation/paths.yaml#/~1actions~1simulation~1stop"
+  /actions/simulation/pause:
+    $ref: "simulation/paths.yaml#/~1actions~1simulation~1pause"
+  /actions/simulation/complete:
+    $ref: "simulation/paths.yaml#/~1actions~1simulation~1complete"
+  /actions/boids/mark:
+    $ref: "boids/paths.yaml#/~1actions~1boids~1mark"
+  /map/tiles/{z}/{x}/{y}:
+    $ref: "map/paths.yaml#/~1map~1tiles~1{z}~1{x}~1{y}"
+  /map/rls:
+    $ref: "map/paths.yaml#/~1map~1rls"
+  /map/rls/{id}:
+    $ref: "map/paths.yaml#/~1map~1rls~1{id}"
+  /rls:
+    $ref: "rls/paths.yaml#/~1rls"
+  /rls/{id}:
+    $ref: "rls/paths.yaml#/~1rls~1{id}"
+  /boids:
+    $ref: "boids/paths.yaml#/~1boids"
+  /boids/{id}:
+    $ref: "boids/paths.yaml#/~1boids~1{id}"
+  /settings:
+    $ref: "settings/paths.yaml#/~1settings"
+  /settings/{id}:
+    $ref: "settings/paths.yaml#/~1settings~1{id}"
+  /reports:
+    $ref: "reports/paths.yaml#/~1reports"
+  /logs:
+    $ref: "logs/paths.yaml#/~1logs"
+  /admin/users:
+    $ref: "admin/paths.yaml#/~1admin~1users"
+  /admin/users/{id}:
+    $ref: "admin/paths.yaml#/~1admin~1users~1{id}"
+  /admin/features:
+    $ref: "admin/paths.yaml#/~1admin~1features"
+  /admin/features/{id}:
+    $ref: "admin/paths.yaml#/~1admin~1features~1{id}"
+  /event:
+    $ref: "events/paths.yaml#/~1event"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    AdminUser:
+      $ref: ./admin/entities.yaml#/components/schemas/AdminUser
+    AdminUserList:
+      $ref: ./admin/entities.yaml#/components/schemas/AdminUserList
+    Boid:
+      $ref: ./boids/entities.yaml#/components/schemas/Boid
+    BoidList:
+      $ref: ./boids/entities.yaml#/components/schemas/BoidList
+    ChangePasswordRequest:
+      $ref: ./auth/entities.yaml#/components/schemas/ChangePasswordRequest
+    CreateAdminUserRequest:
+      $ref: ./admin/entities.yaml#/components/schemas/CreateAdminUserRequest
+    CreateBoidRequest:
+      $ref: ./boids/entities.yaml#/components/schemas/CreateBoidRequest
+    CreateFeatureRequest:
+      $ref: ./admin/entities.yaml#/components/schemas/CreateFeatureRequest
+    CreateRlsRequest:
+      $ref: ./rls/entities.yaml#/components/schemas/CreateRlsRequest
+    CreateSettingRequest:
+      $ref: ./settings/entities.yaml#/components/schemas/CreateSettingRequest
+    CustomEventRequest:
+      $ref: ./events/entities.yaml#/components/schemas/CustomEventRequest
+    CustomEventResult:
+      $ref: ./events/entities.yaml#/components/schemas/CustomEventResult
+    Feature:
+      $ref: ./admin/entities.yaml#/components/schemas/Feature
+    FeatureList:
+      $ref: ./admin/entities.yaml#/components/schemas/FeatureList
+    LogEntry:
+      $ref: ./logs/entities.yaml#/components/schemas/LogEntry
+    LoginRequest:
+      $ref: ./auth/entities.yaml#/components/schemas/LoginRequest
+    LogList:
+      $ref: ./logs/entities.yaml#/components/schemas/LogList
+    MapRls:
+      $ref: ./map/entities.yaml#/components/schemas/MapRls
+    MarkBoidRequest:
+      $ref: ./boids/entities.yaml#/components/schemas/MarkBoidRequest
+    MarkBoidResult:
+      $ref: ./boids/entities.yaml#/components/schemas/MarkBoidResult
+    OkResponse:
+      $ref: ./entities.yaml#/components/schemas/OkResponse
+    PlaceRlsOnMapRequest:
+      $ref: ./map/entities.yaml#/components/schemas/PlaceRlsOnMapRequest
+    Problem:
+      $ref: ./entities.yaml#/components/schemas/Problem
+    ProblemResponse:
+      $ref: ./entities.yaml#/components/schemas/ProblemResponse
+    Profile:
+      $ref: ./users/entities.yaml#/components/schemas/Profile
+    Report:
+      $ref: ./reports/entities.yaml#/components/schemas/Report
+    ReportList:
+      $ref: ./reports/entities.yaml#/components/schemas/ReportList
+    Rls:
+      $ref: ./rls/entities.yaml#/components/schemas/Rls
+    RlsList:
+      $ref: ./rls/entities.yaml#/components/schemas/RlsList
+    RlsMapList:
+      $ref: ./map/entities.yaml#/components/schemas/RlsMapList
+    Setting:
+      $ref: ./settings/entities.yaml#/components/schemas/Setting
+    SettingList:
+      $ref: ./settings/entities.yaml#/components/schemas/SettingList
+    SimulationSessionAck:
+      $ref: ./simulation/entities.yaml#/components/schemas/SimulationSessionAck
+    StartSimulationRequest:
+      $ref: ./simulation/entities.yaml#/components/schemas/StartSimulationRequest
+    UpdateAdminUserRequest:
+      $ref: ./admin/entities.yaml#/components/schemas/UpdateAdminUserRequest
+    UpdateBoidRequest:
+      $ref: ./boids/entities.yaml#/components/schemas/UpdateBoidRequest
+    UpdateFeatureRequest:
+      $ref: ./admin/entities.yaml#/components/schemas/UpdateFeatureRequest
+    UpdateRlsRequest:
+      $ref: ./rls/entities.yaml#/components/schemas/UpdateRlsRequest
+    UpdateSettingRequest:
+      $ref: ./settings/entities.yaml#/components/schemas/UpdateSettingRequest
+  parameters:
+    BoidIdPath:
+      $ref: components/parameters/BoidIdPath.yaml
+    FeatureIdPath:
+      $ref: components/parameters/FeatureIdPath.yaml
+    LimitParam:
+      $ref: components/parameters/LimitParam.yaml
+    LogLimitParam:
+      $ref: components/parameters/LogLimitParam.yaml
+    OffsetParam:
+      $ref: components/parameters/OffsetParam.yaml
+    PageParam:
+      $ref: components/parameters/PageParam.yaml
+    RlsIdPath:
+      $ref: components/parameters/RlsIdPath.yaml
+    SettingIdPath:
+      $ref: components/parameters/SettingIdPath.yaml
+    SortParam:
+      $ref: components/parameters/SortParam.yaml
+    UserIdPath:
+      $ref: components/parameters/UserIdPath.yaml
+    XPath:
+      $ref: components/parameters/XPath.yaml
+    YPath:
+      $ref: components/parameters/YPath.yaml
+    ZPath:
+      $ref: components/parameters/ZPath.yaml
+  headers:
+    RateLimit-Limit:
+      $ref: components/headers/RateLimit-Limit.yaml
+    RateLimit-Remaining:
+      $ref: components/headers/RateLimit-Remaining.yaml
+    RateLimit-Reset:
+      $ref: components/headers/RateLimit-Reset.yaml
+    Retry-After:
+      $ref: components/headers/Retry-After.yaml
+security:
+  - basicAuth: []

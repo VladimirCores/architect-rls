@@ -1,0 +1,48 @@
+# ── Tooling / local state ────────────────────────────────
+.bmad-loop
+_bmad/render/
+_bmad/render/
+.qwen
+.kilo
+.opencode
+.claude
+.gemini
+
+# ── Node / Bun ───────────────────────────────────────────
+node_modules/
+bun.lockb
+
+# ── Build output ─────────────────────────────────────────
+backend/dist/
+dist/
+*.tsbuildinfo
+
+# ── Environment (ADR-0002) ───────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Runtime data (ADR-0011) ──────────────────────────────
+backend/data/
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# ── Maps (загружаются/генерируются, не коммитятся) ───────
+*.mbtiles
+backend/assets/maps/
+
+# ── Recordings (.rlsrec) ─────────────────────────────────
+*.rlsrec
+recordings/
+
+# ── OS / IDE ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ── Source code (ADR-0001) ─────────────────────────────────────────────
+backend/src/generated

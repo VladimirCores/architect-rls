@@ -1,0 +1,9 @@
+name: limit
+in: query
+required: false
+description: Max log lines to return (1..1000)
+schema:
+  type: integer
+  minimum: 1
+  maximum: 1000
+  default: 100

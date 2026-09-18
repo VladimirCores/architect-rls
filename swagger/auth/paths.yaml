@@ -1,0 +1,84 @@
+/login:
+  post:
+    tags:
+      - Auth
+    summary: Authenticate and start a session
+    operationId: login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/LoginRequest"
+          examples:
+            default:
+              value:
+                username: operator_1
+                password: securePassword123
+    responses:
+      '200':
+        description: Authenticated
+        content:
+          application/json:
+            schema:
+              $ref: "../users/entities.yaml#/components/schemas/Profile"
+            examples:
+              default:
+                value:
+                  uid: u_123
+                  username: operator_1
+                  role: user
+                  features:
+                    - radar.export
+                    - session.history
+      '401':
+        description: Invalid credentials
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+            examples:
+              invalid_credentials:
+                value:
+                  type: https://docs.example.com/problems/invalid-credentials
+                  title: Invalid credentials
+                  status: 401
+                  detail: Incorrect username or password
+      '429':
+        description: Rate limited (lockout)
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+/logout:
+  post:
+    tags:
+      - Auth
+    summary: End the current session
+    operationId: logout
+    responses:
+      '204':
+        description: Session ended
+/actions/changepassword:
+  post:
+    tags:
+      - Profile
+    summary: Change own password
+    operationId: changePassword
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/ChangePasswordRequest"
+    responses:
+      '204':
+        description: Password changed
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+      '401':
+        description: Not authenticated

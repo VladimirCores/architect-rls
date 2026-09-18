@@ -1,0 +1,28 @@
+{
+  "name": "@rls/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/main.ts",
+    "start": "bun src/main.ts",
+    "build": "bun build src/main.ts --compile --outfile ./dist/backend",
+    "generate": "bun scripts/generate.ts",
+    "typecheck": "bunx tsc --noEmit",
+    "test": "bun test",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format --write src/"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.18.0",
+    "drizzle-orm": "^0.36.0",
+    "hono": "^4.6.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.0",
+    "drizzle-kit": "^0.28.0",
+    "typescript": "^5.6.0"
+  }
+}

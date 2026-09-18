@@ -1,0 +1,77 @@
+version: "3"
+
+includes:
+  backend:
+    taskfile: ./backend/Taskfile.yaml
+    dir: ./backend
+
+tasks:
+  default:
+    desc: Run the full dev environment
+    deps:
+      - task: backend:dev
+
+  dev:
+    desc: Start backend in watch mode
+    cmds:
+      - bun run --cwd backend dev
+
+  build:
+    desc: Build backend binary
+    cmds:
+      - bun run --cwd backend build
+
+  test:
+    desc: Run all tests
+    cmds:
+      - bun run --cwd backend test
+
+  typecheck:
+    desc: Typecheck backend
+    cmds:
+      - bun run --cwd backend typecheck
+
+  lint:
+    desc: Lint all TypeScript with Biome
+    cmds:
+      - bun run lint
+
+  lint:fix:
+    desc: Lint and auto-fix with Biome
+    cmds:
+      - bun run lint:fix
+
+  format:
+    desc: Format all code with Biome
+    cmds:
+      - bun run format
+
+  generate:
+    desc: Regenerate routes and schemas from the swagger spec
+    cmds:
+      - bun run generate
+
+  swagger:ui:
+    desc: Run Swagger UI in Docker
+    cmds:
+      - bun run swagger:ui
+
+  swagger:lint:
+    desc: Validate the OpenAPI spec
+    cmds:
+      - bun run swagger:lint
+
+  swagger:bundle:
+    desc: Bundle the split spec into a single file
+    cmds:
+      - bun run swagger:bundle
+
+  swagger:split:
+    desc: Re-split openapi.yaml into multiple files
+    cmds:
+      - bun run swagger:split
+
+  generate-client:
+    desc: Regenerate API client from swagger spec
+    cmds:
+      - bunx openapi-generator-cli generate -i swagger/openapi.yaml -g dart-dio -o frontend/lib/api

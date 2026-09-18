@@ -1,0 +1,31 @@
+/event:
+  post:
+    tags:
+      - Events
+    summary: Ingest a custom event
+    operationId: postEvent
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CustomEventRequest"
+    responses:
+      '201':
+        description: Event accepted
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/CustomEventResult"
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+      '429':
+        description: Rate limited
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"

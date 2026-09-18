@@ -1,0 +1,80 @@
+components:
+  schemas:
+    CreateSettingRequest:
+      title: CreateSettingRequest
+      type: object
+      additionalProperties: false
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          minLength: 1
+        value:
+          type: string
+    Setting:
+      title: Setting
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - key
+      - value
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        key:
+          type: string
+          minLength: 1
+          readOnly: true
+          example: simulation.default_speed
+        value:
+          type: string
+          description: Setting value (stored as string; typed parsing is client-side)
+          example: '16'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    SettingList:
+      title: SettingList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Setting'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200
+    UpdateSettingRequest:
+      title: UpdateSettingRequest
+      type: object
+      additionalProperties: false
+      required:
+      - value
+      properties:
+        value:
+          type: string

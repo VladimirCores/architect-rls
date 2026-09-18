@@ -1,0 +1,76 @@
+/actions/simulation/complete:
+  post:
+    tags:
+      - Simulation
+    summary: Complete a simulation session
+    operationId: completeSimulation
+    responses:
+      '200':
+        description: Simulation completed
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/SimulationSessionAck"
+/actions/simulation/pause:
+  post:
+    tags:
+      - Simulation
+    summary: Pause a running simulation
+    operationId: pauseSimulation
+    responses:
+      '200':
+        description: Simulation paused
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/SimulationSessionAck"
+/actions/simulation/start:
+  post:
+    tags:
+      - Simulation
+    summary: Start a new simulation session
+    operationId: startSimulation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/StartSimulationRequest"
+    responses:
+      '200':
+        description: Simulation started
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/SimulationSessionAck"
+            examples:
+              default:
+                value:
+                  session_id: sess_abc123
+                  status: running
+                  tick: 0
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+/actions/simulation/stop:
+  post:
+    tags:
+      - Simulation
+    summary: Stop a running simulation
+    operationId: stopSimulation
+    responses:
+      '200':
+        description: Simulation stopped
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/SimulationSessionAck"
+      '404':
+        description: No active session
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"

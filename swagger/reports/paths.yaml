@@ -1,0 +1,17 @@
+/reports:
+  get:
+    tags:
+      - Reports
+    summary: List reports
+    operationId: listReports
+    parameters:
+      - $ref: ../components/parameters/PageParam.yaml
+      - $ref: ../components/parameters/LimitParam.yaml
+      - $ref: ../components/parameters/SortParam.yaml
+    responses:
+      '200':
+        description: Paginated report list
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/ReportList"

@@ -1,0 +1,53 @@
+components:
+  schemas:
+    Report:
+      title: Report
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - type
+      - generated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - session_summary
+          - marking_accuracy
+          - boid_activity
+        generated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    ReportList:
+      title: ReportList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200

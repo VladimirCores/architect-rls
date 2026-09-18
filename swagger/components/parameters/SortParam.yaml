@@ -1,0 +1,7 @@
+name: sort
+in: query
+required: true
+description: Sort field and direction, e.g. `created_at:desc`
+schema:
+  type: string
+  pattern: ^[a-z_]+:(asc|desc)$

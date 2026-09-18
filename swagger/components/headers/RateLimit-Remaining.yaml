@@ -1,0 +1,7 @@
+name: RateLimit-Remaining
+in: header
+required: false
+description: Number of requests remaining in the current window
+schema:
+  type: integer
+  minimum: 0

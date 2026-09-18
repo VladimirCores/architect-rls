@@ -1,0 +1,131 @@
+/boids:
+  get:
+    tags:
+      - Boids
+    summary: List boids (directory)
+    operationId: listBoids
+    parameters:
+      - $ref: ../components/parameters/PageParam.yaml
+      - $ref: ../components/parameters/LimitParam.yaml
+      - $ref: ../components/parameters/SortParam.yaml
+    responses:
+      '200':
+        description: Paginated list of boids
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/BoidList"
+      '422':
+        description: Invalid pagination or sort parameters
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  post:
+    tags:
+      - Boids
+    summary: Create a boid type
+    operationId: createBoid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CreateBoidRequest"
+    responses:
+      '201':
+        description: Boid created
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Boid"
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+/boids/{id}:
+  get:
+    tags:
+      - Boids
+    summary: Get boid by ID
+    operationId: getBoid
+    parameters:
+      - $ref: ../components/parameters/BoidIdPath.yaml
+    responses:
+      '200':
+        description: Boid details
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Boid"
+      '404':
+        description: Not found
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+  put:
+    tags:
+      - Boids
+    summary: Update boid type
+    operationId: updateBoid
+    parameters:
+      - $ref: ../components/parameters/BoidIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/UpdateBoidRequest"
+    responses:
+      '200':
+        description: Boid updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Boid"
+      '404':
+        description: Not found
+  delete:
+    tags:
+      - Boids
+    summary: Delete boid type
+    operationId: deleteBoid
+    parameters:
+      - $ref: ../components/parameters/BoidIdPath.yaml
+    responses:
+      '204':
+        description: Boid deleted
+/actions/boids/mark:
+  post:
+    tags:
+      - Marking
+    summary: Mark a boid as dangerous or safe
+    operationId: markBoid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/MarkBoidRequest"
+    responses:
+      '200':
+        description: Boid marked
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/MarkBoidResult"
+      '400':
+        description: Validation error
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"
+      '404':
+        description: Boid or session not found
+        content:
+          application/problem+json:
+            schema:
+              $ref: "../entities.yaml#/components/schemas/Problem"

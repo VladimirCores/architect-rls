@@ -1,0 +1,47 @@
+version: "3"
+
+tasks:
+  default:
+    desc: Run backend in watch mode
+    cmds:
+      - bun run dev
+
+  dev:
+    desc: Start backend in watch mode
+    cmds:
+      - bun --watch src/main.ts
+
+  start:
+    desc: Start backend
+    cmds:
+      - bun src/main.ts
+
+  build:
+    desc: Compile backend to standalone binary
+    cmds:
+      - bun build src/main.ts --compile --outfile ./dist/backend
+
+  typecheck:
+    desc: Typecheck backend
+    cmds:
+      - bunx tsc --noEmit
+
+  test:
+    desc: Run backend tests
+    cmds:
+      - bun test
+
+  db:generate:
+    desc: Generate Drizzle migrations
+    cmds:
+      - bunx drizzle-kit generate
+
+  db:migrate:
+    desc: Run Drizzle migrations
+    cmds:
+      - bunx drizzle-kit migrate
+
+  db:studio:
+    desc: Open Drizzle Studio
+    cmds:
+      - bunx drizzle-kit studio

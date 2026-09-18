@@ -1,0 +1,36 @@
+components:
+  schemas:
+    CustomEventRequest:
+      title: CustomEventRequest
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - idempotency_key
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Canonical event type name
+        idempotency_key:
+          type: string
+          format: uuid
+          description: Client-generated UUID for deduplication
+        payload:
+          type: object
+          description: Arbitrary event payload
+          additionalProperties: true
+    CustomEventResult:
+      title: CustomEventResult
+      type: object
+      additionalProperties: false
+      required:
+      - event_id
+      - name
+      properties:
+        event_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true

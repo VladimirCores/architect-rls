@@ -1,0 +1,65 @@
+components:
+  schemas:
+    SimulationSessionAck:
+      title: SimulationSessionAck
+      type: object
+      additionalProperties: false
+      required:
+      - session_id
+      - status
+      - tick
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Session identifier
+        status:
+          type: string
+          enum:
+          - running
+          - paused
+          - completed
+          description: Current simulation status
+        tick:
+          type: integer
+          minimum: 0
+          description: Current simulation tick (monotonic counter)
+    StartSimulationRequest:
+      title: StartSimulationRequest
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Simulation session name
+          example: Training Session 1
+        boid_types:
+          type: array
+          description: Boid type IDs to spawn in the simulation
+          items:
+            type: string
+            format: uuid
+        map_region:
+          type: string
+          description: Map region identifier for the simulation
+          example: moscow
+        seed:
+          type: integer
+          minimum: 0
+          description: Random seed for reproducible simulations
+        max_ticks:
+          type: integer
+          minimum: 1
+          description: Maximum number of ticks before auto-completion
+          example: 3600
+        speed_multiplier:
+          type: number
+          format: double
+          minimum: 0.1
+          maximum: 10
+          default: 1
+          description: Speed multiplier for simulation time

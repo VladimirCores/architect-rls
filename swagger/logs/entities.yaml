@@ -1,0 +1,41 @@
+components:
+  schemas:
+    LogEntry:
+      title: LogEntry
+      type: object
+      additionalProperties: false
+      required:
+      - level
+      - message
+      - timestamp
+      properties:
+        level:
+          type: string
+          enum:
+          - info
+          - warn
+          - error
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    LogList:
+      title: LogList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - offset
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        total:
+          type: integer
+          minimum: 0
+        offset:
+          type: integer
+          minimum: 0

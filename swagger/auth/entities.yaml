@@ -1,0 +1,34 @@
+components:
+  schemas:
+    ChangePasswordRequest:
+      title: ChangePasswordRequest
+      type: object
+      additionalProperties: false
+      required:
+      - current_password
+      - new_password
+      properties:
+        current_password:
+          type: string
+          minLength: 8
+        new_password:
+          type: string
+          minLength: 8
+    LoginRequest:
+      title: LoginRequest
+      type: object
+      additionalProperties: false
+      required:
+      - username
+      - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Login. Must not contain `:` (RFC 7617).
+          example: operator_1
+        password:
+          type: string
+          minLength: 8
+          description: Plaintext password (transmitted over HTTPS only).
+          example: securePassword123

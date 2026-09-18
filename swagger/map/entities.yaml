@@ -1,0 +1,89 @@
+components:
+  schemas:
+    MapRls:
+      title: MapRls
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - rls_id
+      - latitude
+      - longitude
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        rls_id:
+          type: string
+          format: uuid
+          description: Reference to the RLS directory entry
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        label:
+          type: string
+          maxLength: 100
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PlaceRlsOnMapRequest:
+      title: PlaceRlsOnMapRequest
+      type: object
+      additionalProperties: false
+      required:
+      - rls_id
+      - latitude
+      - longitude
+      properties:
+        rls_id:
+          type: string
+          format: uuid
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        label:
+          type: string
+          maxLength: 100
+          nullable: true
+    RlsMapList:
+      title: RlsMapList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MapRls'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200

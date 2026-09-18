@@ -1,0 +1,180 @@
+components:
+  schemas:
+    AdminUser:
+      title: AdminUser
+      type: object
+      additionalProperties: false
+      required:
+      - uid
+      - username
+      - role
+      - created_at
+      - updated_at
+      - disabled
+      properties:
+        uid:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        role:
+          type: string
+          enum:
+          - admin
+          - user
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        disabled:
+          type: boolean
+          readOnly: true
+    AdminUserList:
+      title: AdminUserList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUser'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200
+    CreateAdminUserRequest:
+      title: CreateAdminUserRequest
+      type: object
+      additionalProperties: false
+      required:
+      - username
+      - password
+      - role
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum:
+          - admin
+          - user
+    CreateFeatureRequest:
+      title: CreateFeatureRequest
+      type: object
+      additionalProperties: false
+      required:
+      - code
+      - name
+      properties:
+        code:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+    Feature:
+      title: Feature
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - code
+      - name
+      - description
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          minLength: 1
+          readOnly: true
+          example: radar.export
+        name:
+          type: string
+          minLength: 1
+          example: Radar Export
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    FeatureList:
+      title: FeatureList
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      - total
+      - page
+      - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 200
+    UpdateAdminUserRequest:
+      title: UpdateAdminUserRequest
+      type: object
+      additionalProperties: false
+      properties:
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum:
+          - admin
+          - user
+        disabled:
+          type: boolean
+    UpdateFeatureRequest:
+      title: UpdateFeatureRequest
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true

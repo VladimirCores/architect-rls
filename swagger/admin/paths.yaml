@@ -1,0 +1,158 @@
+/admin/features:
+  get:
+    tags:
+      - Admin
+    summary: List features (admin only)
+    operationId: listAdminFeatures
+    responses:
+      '200':
+        description: Feature list
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/FeatureList"
+  post:
+    tags:
+      - Admin
+    summary: Create a feature (admin only)
+    operationId: createAdminFeature
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CreateFeatureRequest"
+    responses:
+      '201':
+        description: Feature created
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Feature"
+/admin/users:
+  get:
+    tags:
+      - Admin
+    summary: List all users (admin only)
+    operationId: listAdminUsers
+    parameters:
+      - $ref: ../components/parameters/PageParam.yaml
+      - $ref: ../components/parameters/LimitParam.yaml
+      - $ref: ../components/parameters/SortParam.yaml
+    responses:
+      '200':
+        description: Paginated user list
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/AdminUserList"
+  post:
+    tags:
+      - Admin
+    summary: Create a user (admin only)
+    operationId: createAdminUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/CreateAdminUserRequest"
+    responses:
+      '201':
+        description: User created
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/AdminUser"
+/admin/features/{id}:
+  get:
+    tags:
+      - Admin
+    summary: Get feature by ID (admin only)
+    operationId: getAdminFeature
+    parameters:
+      - $ref: ../components/parameters/FeatureIdPath.yaml
+    responses:
+      '200':
+        description: Feature details
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Feature"
+  put:
+    tags:
+      - Admin
+    summary: Update feature (admin only)
+    operationId: updateAdminFeature
+    parameters:
+      - $ref: ../components/parameters/FeatureIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/UpdateFeatureRequest"
+    responses:
+      '200':
+        description: Feature updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/Feature"
+  delete:
+    tags:
+      - Admin
+    summary: Delete a feature (admin only)
+    operationId: deleteAdminFeature
+    parameters:
+      - $ref: ../components/parameters/FeatureIdPath.yaml
+    responses:
+      '204':
+        description: Feature deleted
+/admin/users/{id}:
+  get:
+    tags:
+      - Admin
+    summary: Get user by ID (admin only)
+    operationId: getAdminUser
+    parameters:
+      - $ref: ../components/parameters/UserIdPath.yaml
+    responses:
+      '200':
+        description: User details
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/AdminUser"
+      '404':
+        description: Not found
+  put:
+    tags:
+      - Admin
+    summary: Update user (admin only)
+    operationId: updateAdminUser
+    parameters:
+      - $ref: ../components/parameters/UserIdPath.yaml
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./entities.yaml#/components/schemas/UpdateAdminUserRequest"
+    responses:
+      '200':
+        description: User updated
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/AdminUser"
+  delete:
+    tags:
+      - Admin
+    summary: Disable or delete a user (admin only)
+    operationId: deleteAdminUser
+    parameters:
+      - $ref: ../components/parameters/UserIdPath.yaml
+    responses:
+      '204':
+        description: User deleted/disabled

@@ -1,0 +1,7 @@
+name: x
+in: path
+required: true
+description: Tile X coordinate
+schema:
+  type: integer
+  minimum: 0

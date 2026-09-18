@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RLS Simulator — System Architecture",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "rls-architecture.html",
+    "viewBox": [1380, 640]
+  },
+  "components": [
+    { "id": "operator", "type": "external", "label": "Operator", "sublabel": "user role", "pos": [40, 290], "size": [130, 60] },
+    { "id": "admin", "type": "external", "label": "Administrator", "sublabel": "admin role", "pos": [40, 520], "size": [130, 60] },
+    { "id": "client", "type": "frontend", "label": "RLS Client", "sublabel": "Flutter (Linux / Windows)", "pos": [250, 290], "size": [150, 60] },
+    { "id": "gateway", "type": "backend", "label": "API Gateway", "sublabel": "Hono · REST + WebSocket", "pos": [470, 290], "size": [150, 60] },
+    { "id": "session", "type": "backend", "label": "Session Manager", "sublabel": "owns session state", "pos": [710, 290], "size": [150, 60] },
+    { "id": "engine", "type": "backend", "label": "Simulation Engine", "sublabel": "boids · ticks · movement", "pos": [950, 290], "size": [150, 60] },
+    { "id": "users", "type": "backend", "label": "Users & Features", "sublabel": "auth · roles · flags", "pos": [640, 80], "size": [150, 60] },
+    { "id": "reference", "type": "backend", "label": "Reference Data", "sublabel": "RLS · boids · objects", "pos": [880, 80], "size": [150, 60] },
+    { "id": "maps", "type": "backend", "label": "Maps", "sublabel": "MBTiles · tile serving", "pos": [710, 520], "size": [150, 60] },
+    { "id": "eventstore", "type": "database", "label": "Event Store", "sublabel": "append-only events", "pos": [950, 520], "size": [150, 60] },
+    { "id": "analytics", "type": "backend", "label": "Analytics & Reports", "sublabel": "metrics · reports", "pos": [1200, 520], "size": [150, 60] },
+    { "id": "appdb", "type": "database", "label": "App DB", "sublabel": "SQLite / Postgres", "pos": [1140, 80], "size": [150, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Backend modular monolith (Bun)", "wraps": ["gateway", "session", "engine", "users", "reference", "maps", "analytics"] },
+    { "kind": "region", "label": "Data stores", "wraps": ["eventstore", "appdb"] }
+  ],
+  "connections": [
+    { "id": "operator-to-client", "from": "operator", "to": "client", "label": "run session · mark boids", "variant": "emphasis", "labelAt": [190, 272] },
+    { "id": "admin-to-client", "from": "admin", "to": "client", "label": "manage users / features", "variant": "dashed" },
+    { "id": "client-to-gateway", "from": "client", "to": "gateway", "label": "HTTPS REST + WS", "variant": "emphasis", "labelAt": [435, 365] },
+    { "id": "gateway-to-users", "from": "gateway", "to": "users", "label": "Basic Auth · features", "variant": "security", "fromSide": "top", "toSide": "bottom" },
+    { "id": "gateway-to-session", "from": "gateway", "to": "session", "label": "start / stop / pause", "variant": "emphasis", "labelAt": [660, 365] },
+    { "id": "session-to-engine", "from": "session", "to": "engine", "label": "tick · update boids", "variant": "emphasis", "labelAt": [900, 365] },
+    { "id": "session-to-eventstore", "from": "session", "to": "eventstore", "label": "append events", "fromSide": "bottom", "toSide": "top" },
+    { "id": "session-to-maps", "from": "session", "to": "maps", "label": "load map / tiles", "fromSide": "bottom", "toSide": "top", "labelAt": [800, 470] },
+    { "id": "gateway-to-reference", "from": "gateway", "to": "reference", "label": "CRUD RLS · boids", "fromSide": "top", "toSide": "bottom", "labelAt": [830, 220] },
+    { "id": "gateway-to-analytics", "from": "gateway", "to": "analytics", "label": "reports", "fromSide": "bottom", "toSide": "bottom", "via": [[545, 610], [1275, 610]] },
+    { "id": "users-to-appdb", "from": "users", "to": "appdb", "label": "SQL", "fromSide": "top", "toSide": "top", "labelAt": [900, 44], "via": [[715, 40], [1215, 40], [1215, 60]] },
+    { "id": "reference-to-appdb", "from": "reference", "to": "appdb", "label": "SQL", "fromSide": "top", "toSide": "right", "labelAt": [1050, 24], "via": [[955, 20], [1310, 20], [1310, 110]] },
+    { "id": "eventstore-to-analytics", "from": "eventstore", "to": "analytics", "label": "read events" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Primary path", "items": ["Operator runs a simulation session", "Engine drives boids at ~60 Hz", "Marks are recorded as events for analytics"] },
+    { "dot": "emerald", "title": "Backend monolith (Bun)", "items": ["API Gateway fronts REST + WebSocket", "Session Manager owns session state", "Modules: Engine, Users & Features, Reference Data, Maps, Analytics & Reports"] },
+    { "dot": "violet", "title": "Data stores", "items": ["App DB — SQLite / Postgres", "Event Store — append-only events + .rlsrec", "Maps — read-only MBTiles"] },
+    { "dot": "rose", "title": "Security & open items", "items": ["Basic Auth (RFC 7617), roles admin / user", "Feature flags gate UI and API", "Server deployment (Postgres, RedisBus) — roadmap"] }
+  ]
+}

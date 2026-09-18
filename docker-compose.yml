@@ -1,0 +1,10 @@
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "9989:8080"
+    volumes:
+      - ./swagger:/spec:Z
+    environment:
+      - SWAGGER_JSON=/spec/openapi.yaml
+    restart: unless-stopped

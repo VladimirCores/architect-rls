@@ -1,0 +1,35 @@
+components:
+  schemas:
+    Profile:
+      title: Profile
+      type: object
+      additionalProperties: false
+      required:
+      - uid
+      - username
+      - role
+      - features
+      properties:
+        uid:
+          type: string
+          format: uuid
+          description: Unique user identifier
+          example: u_123
+        username:
+          type: string
+          description: Login name
+          example: operator_1
+        role:
+          type: string
+          enum:
+          - admin
+          - user
+          description: User role
+        features:
+          type: array
+          items:
+            type: string
+          description: Feature codes granted to this user
+          example:
+          - radar.export
+          - session.history

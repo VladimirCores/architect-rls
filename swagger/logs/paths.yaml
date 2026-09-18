@@ -1,0 +1,16 @@
+/logs:
+  get:
+    tags:
+      - Logs
+    summary: Get application logs (tail)
+    operationId: getLogs
+    parameters:
+      - $ref: ../components/parameters/OffsetParam.yaml
+      - $ref: ../components/parameters/LogLimitParam.yaml
+    responses:
+      '200':
+        description: Log entries
+        content:
+          application/json:
+            schema:
+              $ref: "./entities.yaml#/components/schemas/LogList"

@@ -1,0 +1,7 @@
+name: RateLimit-Limit
+in: header
+required: false
+description: Maximum number of requests allowed in the current window
+schema:
+  type: integer
+  minimum: 1
