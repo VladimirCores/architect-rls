@@ -51,6 +51,28 @@ bun run lint
 bun run format
 ```
 
+## E2E тесты (Robot Framework)
+
+E2E‑тесты на [Robot Framework](https://robotframework.org/) с библиотекой
+[robotframework-browser](https://marketsquare.github.io/robotframework-browser/)
+(Playwright). Пример‑тест покрывает роут `POST /api/v1/login`. Подробнее —
+в [`tests/e2e/README.md`](tests/e2e/README.md).
+
+```bash
+# Поднять окружение для E2E (venv + robotframework-browser + Chromium),
+# развернуть БД с тестовым пользователем, запустить бекенд и выполнить тесты
+bun run e2e
+
+# Только установка инструментария
+bun run e2e:install
+
+# Или через task:
+task e2e
+```
+
+Переменные окружения: `RLS_TEST_PORT` (по умолчанию `3001`), `BIND_ADDRESS`,
+`DB_PATH`. Тесты пишут артефакты в `tests/e2e/results/` (в `gitignore`).
+
 ## Документация
 
 - [Архитектурные решения (ADR)](docs/adr/)

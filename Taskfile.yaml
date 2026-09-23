@@ -26,6 +26,16 @@ tasks:
     cmds:
       - bun run --cwd backend test
 
+  e2e:
+    desc: Run Robot Framework E2E tests (seeds DB, starts backend, runs robot, tears down)
+    cmds:
+      - bash tests/e2e/run.sh
+
+  e2e:install:
+    desc: Install E2E tooling only (Python venv + robotframework-browser + Chromium)
+    cmds:
+      - bash tests/e2e/run.sh --setup
+
   typecheck:
     desc: Typecheck backend
     cmds:

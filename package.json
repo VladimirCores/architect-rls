@@ -15,6 +15,8 @@
     "lint": "biome check backend/src",
     "lint:fix": "biome check --write backend/src",
     "format": "biome format --write backend/src",
+    "e2e": "bash tests/e2e/run.sh",
+    "e2e:install": "bash tests/e2e/run.sh --setup",
     "generate": "bun run --cwd backend generate",
     "generate:api": "bun run swagger:bundle && bun run --cwd backend generate",
     "swagger:ui": "podman compose -f docker-compose.yml up",

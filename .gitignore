@@ -48,3 +48,7 @@ Thumbs.db
 
 # ── Source code (ADR-0001) ─────────────────────────────────────────────
 backend/src/generated
+
+# ── E2E (Robot Framework) ────────────────────────────────────────────────
+tests/e2e/.venv/
+tests/e2e/results/
