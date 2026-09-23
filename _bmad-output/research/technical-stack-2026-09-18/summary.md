@@ -1,0 +1,4 @@
+- Technical stack research complete: RLS uses Bun+Hono+Drizzle backend, Flutter frontend, OpenAPI 3.1 multi-file spec
+- Key decisions: Server-authoritative (REST+WS), event sourcing, modular monolith with 8 domain modules
+- All claims based on project documentation (ADR, ARCHITECTURE.md, package.json) rather than external sources
+- Open questions: CI/CD setup, test frameworks, SQLite vs PostgreSQL for dev mode
