@@ -1,6 +1,6 @@
 # Открытые вопросы и TODO
 
-**Обновлено:** 2026-09-17
+**Обновлено:** 2026-09-29
 
 ---
 
@@ -49,3 +49,4 @@
 26. **Swagger multi-file** — **решено:** домен-ориентированная структура — `swagger/<domain>/paths.yaml` + `entities.yaml`, общие схемы (Problem, ProblemResponse, OkResponse) в корневом `swagger/entities.yaml` (DRY); `$ref` — относительные `file.yaml#/pointer`, пути из корня — JSON Pointer (`/` → `~1`); Swagger UI — через корневой `docker-compose.yml` (образ `swaggerapi/swagger-ui`, порт 9989, `npm run swagger:ui`). См. ADR-0024.
 27. **Линтер TS** — **решено:** Biome 2.x — единый линтер и форматтер для всех Bun-workspace пакетов (`backend`, `swagger`, root); конфиг `biome.json` в корне; скрипты `lint`/`lint:fix`/`format`. См. ADR-0025.
 28. **Генерация API-кода (Hono-роуты + Zod)** — **решено:** `orval` (`client: 'hono'`) из бандла `swagger/dist/openapi.json` (`redocly bundle`) → `backend/src/generated/` (endpoints/, handlers/, schemas/). Бизнес-логика — вручную в `backend/src/controllers/`; стабы-обработчики вызывают контроллеры (smart-стратегия Orval сохраняет вызов). Запуск: `bun run generate:api` (корень). Заменяет прежний `@hono/zod-openapi` (spec ← код). См. ADR-0005.
+29. **Frontend: Flutter → Vue 3 + Tauri?** — **открыто:** рассматривается замена Flutter (desktop + web) на Vue 3 + Tauri (весь стек становится TypeScript). Backend-решение не меняется (ADR-0026, Bun остаётся). Влияет на ADR-0001 (стек), ADR-0015 (state), ADR-0016 (упаковка: flutter_distributor → Tauri bundler), ADR-0018 (рендеринг: Flutter Custom Painter → Canvas 2D/WebGL в WebView). **Риск:** производительность рендеринга симуляции (тики ~16 мс, trails, hit-testing) в системном WebView Tauri — нужен прототип до фиксации решения.
